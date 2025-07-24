@@ -61,11 +61,11 @@
     }
 
     .face.front  { transform: rotateY(  0deg) translateZ(33px); background-color: #64ff64;}
-    .face.back   { transform: rotateY(180deg) translateZ(33px); background-color: #EAA7C8; }
-    .face.right  { transform: rotateY( 90deg) translateZ(33px); background-color: orange; }
-    .face.left   { transform: rotateY(-90deg) translateZ(33px); background-color: green; }
-    .face.top    { transform: rotateX( 90deg) translateZ(33px); background-color: yellow; }
-    .face.bottom { transform: rotateX(-90deg) translateZ(33px); background-color: purple; }
+    .face.back   { transform: rotateY(180deg) translateZ(33px); background-color: #ff6464; }
+    .face.right  { transform: rotateY( 90deg) translateZ(33px); background-color: #ffa564; }
+    .face.left   { transform: rotateY(-90deg) translateZ(33px); background-color: #FFFF64; }
+    .face.top    { transform: rotateX( 90deg) translateZ(33px); background-color: #64FFFF; }
+    .face.bottom { transform: rotateX(-90deg) translateZ(33px); background-color: #ff64c8; }
 
     .face::after {
       content: "";
@@ -79,9 +79,9 @@
 
     .face-center.front::after {
       content: "";
-      background-image: url(imgs/spot.png);
+      background-image: url(imgs/spt-icon.png);
       background-repeat:no-repeat;
-      background-size: cover;
+      background-size: 85%;
       background-position: 50% 50%;
       background-color:#80EF80;
       background-blend-mode:luminosity;
@@ -94,24 +94,22 @@
 
     .face-center.back::after {
       content: "";
-      background-image: url(imgs/sent.gif);
+      background-image: url(imgs/ytb-icon.png);
       background-repeat:no-repeat;
-      background-size: cover;
+      background-size: 85%;
       background-position: 50% 50%;
       width: 100%;
     height: 100%;
     position: relative;
     top: 0%;
     left: 0%;
-    background-color: #EAA7C8;  /* cor de fundo semitransparente */
-    background-blend-mode:multiply; /* efeito de multiplicação */
     }
 
     .face-center.right::after {
       content: "";
-      background-image: url(imgs/aura.gif);
+      background-image: url(imgs/profile-icon.png);
       background-repeat:no-repeat;
-      background-size: cover;
+      background-size: 90%;
       background-position: 50% 50%;
       width: 100%;
     height: 100%;
@@ -121,9 +119,9 @@
     }
     .face-center.left::after {
       content: "";
-      background-image: url(imgs/aura.gif);
+      background-image: url(imgs/sdl-icon.png);
       background-repeat:no-repeat;
-      background-size: cover;
+      background-size: 85%;
       background-position: 50% 50%;
       width: 100%;
     height: 100%;
@@ -134,9 +132,9 @@
 
     .face-center.top::after {
       content: "";
-      background-image: url(imgs/aura.gif);
+      background-image: url(imgs/icon.png);
       background-repeat:no-repeat;
-      background-size: cover;
+      background-size: 100%;
       background-position: 50% 50%;
       width: 100%;
     height: 100%;
@@ -147,9 +145,9 @@
 
     .face-center.bottom::after {
       content: "";
-      background-image: url(imgs/aura.gif);
+      background-image: url(imgs/cd-icon.png);
       background-repeat:no-repeat;
-      background-size: cover;
+      background-size: 85%;
       background-position: 50% 50%;
       width: 100%;
     height: 100%;
@@ -174,7 +172,7 @@
     }
 
     .rosebg {
-      background-image: url(imgs/bg1.png);
+      background-image: url(imgs/Dyan\ -\ PH-137.jpg);
       background-position: 50% 50%;
       background-size: cover;
       background-repeat: no-repeat;
@@ -238,7 +236,7 @@
 </head>
 <body>
   <div style="display: flex; width: 100%; justify-content:center;align-itens:center;color:blue">
-    <img style="width:150px;margin-top:25px;" src="imgs/logody.png">
+    <img style="width:200px;margin-top:25px;" src="imgs/logody.png">
   </div>
 
   <div id="initialPopup" class="fullscreen-popup">
@@ -266,9 +264,32 @@
 
   <script>
     const cubeContainer = document.getElementById('cubeContainer');
-    const cubeSize = 66;
-    const offset = cubeSize;
-
+  
+    // NOVO TAMANHO DO CUBO
+    const cubeSize = 80;
+    const halfSize = cubeSize / 2;
+  
+    // Atualiza dinamicamente os tamanhos das faces e cubos
+    const style = document.createElement('style');
+    style.innerHTML = `
+      .mini-cube {
+        width: ${cubeSize}px !important;
+        height: ${cubeSize}px !important;
+      }
+      .face {
+        width: ${cubeSize}px !important;
+        height: ${cubeSize}px !important;
+        border: 1px solid #6464FF !important;
+      }
+      .face.front  { transform: rotateY(0deg) translateZ(${halfSize}px); }
+      .face.back   { transform: rotateY(180deg) translateZ(${halfSize}px); }
+      .face.right  { transform: rotateY(90deg) translateZ(${halfSize}px); }
+      .face.left   { transform: rotateY(-90deg) translateZ(${halfSize}px); }
+      .face.top    { transform: rotateX(90deg) translateZ(${halfSize}px); }
+      .face.bottom { transform: rotateX(-90deg) translateZ(${halfSize}px); }
+    `;
+    document.head.appendChild(style);
+  
     const facePositions = [
       { face: 'front',  x:  0, y:  0, z:  1 },
       { face: 'back',   x:  0, y:  0, z: -1 },
@@ -277,19 +298,19 @@
       { face: 'top',    x:  0, y: -1, z:  0 },
       { face: 'bottom', x:  0, y:  1, z:  0 },
     ];
-
+  
     for (let x = -1; x <= 1; x++) {
       for (let y = -1; y <= 1; y++) {
         for (let z = -1; z <= 1; z++) {
           const miniCube = document.createElement('div');
           miniCube.className = 'mini-cube';
-          miniCube.style.transform = `translate3d(${x * offset}px, ${y * offset}px, ${z * offset}px)`;
-
+          miniCube.style.transform = `translate3d(${x * cubeSize}px, ${y * cubeSize}px, ${z * cubeSize}px)`;
+  
           facePositions.forEach(({ face, x: fx, y: fy, z: fz }) => {
             if (x === fx || y === fy || z === fz) {
               const faceDiv = document.createElement('div');
               faceDiv.className = `face ${face} face-${face}`;
-
+  
               if ((x === 0 && y === 0 && z === 1 && face === 'front') ||
                   (x === 0 && y === 0 && z === -1 && face === 'back') ||
                   (x === 1 && y === 0 && z === 0 && face === 'right') ||
@@ -298,14 +319,14 @@
                   (x === 0 && y === 1 && z === 0 && face === 'bottom')) {
                 faceDiv.classList.add('face-center');
               }
-
+  
               faceDiv.addEventListener('click', (e) => {
                 e.stopPropagation();
                 document.querySelectorAll('.fullscreen-popup').forEach(p => p.remove());
-
+  
                 const popup = document.createElement('div');
                 popup.className = 'fullscreen-popup';
-
+  
                 let htmlContent = '';
                 switch (face) {
                   case 'front':
@@ -315,7 +336,28 @@
                     htmlContent = `<div><h1>Face Traseira</h1><p>Aqui está o conteúdo da parte de trás.</p></div>`;
                     break;
                   case 'right':
-                    htmlContent = `<div><h1>DYAN LOHAN.</h1><p>DYAN LOHAN... (conteúdo do lado direito)</p></div>`;
+                    htmlContent = `<div style="display:flex;justify-content:center;align-items:center;min-width:100%;height:100% !important;">
+                      <div style="width:50%;height:100% !important;padding:50px;overflow:scroll;background-color:#E5945A !important;">
+                      <h1 style="font-family:'Satoshi';font-weight:300 !important;color:#FFFFFF;font-size:80px;">QUEM É?</h1>
+                      <p style="font-family:'Chillax';font-weight:300 !important;color:#FFFFFF;line-height:1.2em;font-size:20px;">
+                        Dyan Lohan
+                        em cada face do cubo revela um som.
+                        Cada <em>giro</em>, um tempo. Cada <em>cor</em>, um sentimento.
+                        <spam style="font-weight:700;">artista, produtor, compositor.</spam>
+                        Curitiba é sua raiz — o mundo, sua expansão.
+                        Mais de 15 anos girando a música como um cubo mágico:
+                        entre o groove do baixo, a levada do beat e a alma das canções.
+                        Seus shows são peças <spam style="font-weight:700;">únicas</spam>: DJ e Bass, corpo e frequência.
+                      </p>
+                      <div style="display:flex!important;gap:5px;flex-direction:row !important;">
+                      <img style="width:33.33%" src="imgs/post 1.jpg">
+                      <img style="width:33.33%" src="imgs/post 2.jpg">
+                      <img style="width:33.33%" src="imgs/post 3.jpg">
+                      </div>
+                      </div>
+                        <div style="width:50%;height:100vh;" class="rosebg">
+                          </div>
+                          </div>`;
                     break;
                   case 'left':
                     htmlContent = `<div><h1>Face Esquerda</h1><p>Esta é a lateral esquerda do cubo.</p></div>`;
@@ -329,42 +371,42 @@
                   default:
                     htmlContent = `<div><h1>Face Desconhecida</h1></div>`;
                 }
-
+  
                 popup.innerHTML = htmlContent;
                 popup.addEventListener('click', () => popup.remove());
                 document.body.appendChild(popup);
               });
-
+  
               miniCube.appendChild(faceDiv);
             }
           });
-
+  
           cubeContainer.appendChild(miniCube);
         }
       }
     }
-
+  
     let isDragging = false;
     let lastX, lastY;
     let rotationX = -30;
     let rotationY = 30;
     let offsetX = 0, offsetY = 0;
-
+  
     document.getElementById('scene').addEventListener('mousedown', (e) => {
       isDragging = true;
       lastX = e.clientX;
       lastY = e.clientY;
     });
-
+  
     document.getElementById('scene').addEventListener('touchstart', (e) => {
       isDragging = true;
       lastX = e.touches[0].clientX;
       lastY = e.touches[0].clientY;
     });
-
+  
     document.addEventListener('mouseup', () => isDragging = false);
     document.addEventListener('touchend', () => isDragging = false);
-
+  
     document.addEventListener('mousemove', (e) => {
       if (isDragging) {
         const deltaX = e.clientX - lastX;
@@ -380,7 +422,7 @@
         lastY = e.clientY;
       }
     });
-
+  
     document.addEventListener('touchmove', (e) => {
       if (isDragging) {
         const deltaX = e.touches[0].clientX - lastX;
@@ -396,11 +438,12 @@
         lastY = e.touches[0].clientY;
       }
     });
-
+  
     function closeInitialPopup() {
       const popup = document.getElementById('initialPopup');
       if (popup) popup.remove();
     }
   </script>
+  
 </body>
 </html>

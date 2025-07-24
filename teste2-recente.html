@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Cubo Mágico com Popup</title>
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+      background-color: #6464FF;
+      background-blend-mode: luminosity;
+    }
+
+    .hover-popup {
+      font-family: 'Chillax';
+      font-weight: 500;
+      transition: 0.5s;
+      color: #542BEC;
+      border-radius: 50px !important;
+    }
+
+    .hover-popup:hover {
+      background: #542BEC !important;
+      transition: 0.5s;
+      color: #ffffff !important;
+    }
+
+    .scene {
+      width: 100vw;
+      height: 100vh;
+      perspective: 1000px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: grab;
+      position: relative;
+    }
+
+    .cube-container {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) rotateX(-30deg) rotateY(30deg);
+      transform-style: preserve-3d;
+      transition: transform 0.3s ease-out;
+    }
+
+    .mini-cube {
+      position: absolute;
+      width: 80px;
+      height: 80px;
+      transform-style: preserve-3d;
+    }
+
+    .face {
+      position: absolute;
+      width: 80px;
+      height: 80px;
+      border: 1px solid #6464FF;
+      box-sizing: border-box;
+    }
+
+    .face.front {
+      transform: rotateY(0deg) translateZ(40px);
+      background-color: #64ff64;
+    }
+
+    .face.back {
+      transform: rotateY(180deg) translateZ(40px);
+      background-color: #ff6464;
+    }
+
+    .face.right {
+      transform: rotateY(90deg) translateZ(40px);
+      background-color: #ffa564;
+    }
+
+    .face.left {
+      transform: rotateY(-90deg) translateZ(40px);
+      background-color: #FFFF64;
+    }
+
+    .face.top {
+      transform: rotateX(90deg) translateZ(40px);
+      background-color: #64FFFF;
+    }
+
+    .face.bottom {
+      transform: rotateX(-90deg) translateZ(40px);
+      background-color: #ff64c8;
+    }
+
+    .face::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.1);
+    }
+
+    .face-center.front::after {
+      background-image: url(imgs/spt-icon.png);
+      background-size: 85%;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-color: #80EF80;
+      background-blend-mode: luminosity;
+    }
+
+    .face-center.back::after {
+      background-image: url(imgs/ytb-icon.png);
+      background-size: 85%;
+      background-position: center;
+      background-repeat: no-repeat;
+    }
+
+    .face-center.right::after {
+      background-image: url(imgs/profile-icon.png);
+      background-size: 90%;
+      background-position: center;
+      background-repeat: no-repeat;
+    }
+
+    .face-center.left::after {
+      background-image: url(imgs/sdl-icon.png);
+      background-size: 85%;
+      background-position: center;
+      background-repeat: no-repeat;
+    }
+
+    .face-center.top::after {
+      background-image: url(imgs/icon.png);
+      background-size: 100%;
+      background-position: center;
+      background-repeat: no-repeat;
+    }
+
+    .face-center.bottom::after {
+      background-image: url(imgs/cd-icon.png);
+      background-size: 85%;
+      background-position: center;
+      background-repeat: no-repeat;
+    }
+
+    .rosebg {
+      background-image: url(imgs/Dyan\ -\ PH-137.jpg);
+      background-position: center;
+      background-size: cover;
+      background-repeat: no-repeat;
+    }
+
+    .greenbg {
+      background-image: url(imgs/Dyan\ -\ PH-249.jpg);
+      background-position: center;
+      background-size: cover;
+      background-repeat: no-repeat;
+    }
+
+    .videoWrapper {
+  position: relative;
+  padding-bottom: 56.25%; /* 16:9 */
+  height: 0;
+}
+.videoWrapper iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+    ::-webkit-scrollbar {
+      display: none;
+    }
+
+    .fullscreen-popup {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100% !important;
+      height: 100% !important;
+      background: rgb(0, 0, 0);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+      z-index: 999;
+      transition: 0.5s !important;
+    }
+
+    #initialPopup {
+      background: rgb(0, 0, 0);
+      z-index: 1000;
+      flex-direction: column;
+      text-align: center;
+    }
+
+    #initialPopup button {
+      padding: 12px 24px;
+      font-size: 18px;
+      cursor: pointer;
+      border-radius: 10px;
+      background-color: #ffffff;
+      color: #000;
+      border: none;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+
+<body>
+  <div style="display: flex; width: 100%; justify-content:center;align-items:center;color:blue">
+    <img style="width:200px;margin-top:25px;" src="imgs/logody.png">
+  </div>
+
+  <div id="initialPopup" class="fullscreen-popup">
+    <div style="width: 90%;display: flex; flex-direction: column;">
+      <div style="width: 100%;display: flex;">
+        <h1 style="font-family: 'Chillax';font-size: 160px;font-weight:300;margin:0px;padding:0px;">
+          DYAN LOHAN
+        </h1>
+      </div>
+      <div style="width: 100%;display: flex;justify-content: end;">
+        <p
+          style="width:50%;text-align:right;font-family:'Chillax';font-size:50px;font-weight:300;margin:0px;padding:0px;">
+          Um artista. Várias faces. Um só propósito: transformar momentos em música.
+        </p>
+      </div>
+      <div style="width: 100%; display: flex; justify-content: left;padding-top:80px;">
+        <button class="hover-popup" onclick="closeInitialPopup()">DESCUBRA AS FACES 𖣯</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="scene" id="scene">
+    <div class="cube-container" id="cubeContainer"></div>
+  </div>
+
+  <script>
+    const cubeContainer = document.getElementById('cubeContainer');
+    const cubeSize = 80;
+    const halfSize = cubeSize / 2;
+
+    const facePositions = [
+      { face: 'front', x: 0, y: 0, z: 1 },
+      { face: 'back', x: 0, y: 0, z: -1 },
+      { face: 'right', x: 1, y: 0, z: 0 },
+      { face: 'left', x: -1, y: 0, z: 0 },
+      { face: 'top', x: 0, y: -1, z: 0 },
+      { face: 'bottom', x: 0, y: 1, z: 0 },
+    ];
+
+    for (let x = -1; x <= 1; x++) {
+      for (let y = -1; y <= 1; y++) {
+        for (let z = -1; z <= 1; z++) {
+          const miniCube = document.createElement('div');
+          miniCube.className = 'mini-cube';
+          miniCube.style.transform = `translate3d(${x * cubeSize}px, ${y * cubeSize}px, ${z * cubeSize}px)`;
+
+          facePositions.forEach(({ face, x: fx, y: fy, z: fz }) => {
+            if (x === fx || y === fy || z === fz) {
+              const faceDiv = document.createElement('div');
+              faceDiv.className = `face ${face}`;
+              if (
+                (x === 0 && y === 0 && z === 1 && face === 'front') ||
+                (x === 0 && y === 0 && z === -1 && face === 'back') ||
+                (x === 1 && y === 0 && z === 0 && face === 'right') ||
+                (x === -1 && y === 0 && z === 0 && face === 'left') ||
+                (x === 0 && y === -1 && z === 0 && face === 'top') ||
+                (x === 0 && y === 1 && z === 0 && face === 'bottom')
+              ) {
+                faceDiv.classList.add('face-center');
+              }
+
+              faceDiv.addEventListener('click', (e) => {
+                e.stopPropagation();
+                document.querySelectorAll('.fullscreen-popup').forEach(p => p.remove());
+                const popup = document.createElement('div');
+                popup.className = 'fullscreen-popup';
+
+                let htmlContent = '';
+                switch (face) {
+                  case 'front':
+                    htmlContent = `
+                      <div style="display:flex;justify-content:center;align-items:center;min-width:100%;height:100%;">
+                        <div style="width:50%;height:100%;padding:50px;overflow:scroll;background-color:black;">
+                          <h1 style="font-family:'Satoshi';font-weight:300;color:#64ff64;font-size:80px;">SPOTIFY.</h1>
+                          <iframe data-testid="embed-iframe" style="border-radius:12px margin-bottom:25px !important;" src="https://open.spotify.com/embed/artist/3QcIIxMFK3lPHO1gjn2uYD?utm_source=generator&theme=0" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+                          <iframe data-testid="embed-iframe" style="border-radius:12px" src="https://open.spotify.com/embed/album/3cfMwtraLEex3JlVwUwQOG?utm_source=generator" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+                          </div>
+                        <div style="width:50%;height:100%;" class="greenbg"></div>
+                      </div>`; break;
+                  case 'back':
+                    htmlContent = `<div></div>`; break;
+                  case 'right':
+                    htmlContent = `
+                      <div style="display:flex;justify-content:center;align-items:center;min-width:100%;height:100%;">
+                        <div style="width:50%;height:100%;padding:50px;overflow:scroll;background-color:#E5945A;">
+                          <h1 style="font-family:'Satoshi';font-weight:300;color:#FFFFFF;font-size:80px;">QUEM É?</h1>
+                          <p style="font-family:'Chillax';font-weight:300;color:#FFFFFF;line-height:1.2em;font-size:20px;">
+                            Dyan Lohan em cada face do cubo revela um som. Cada <em>giro</em>, um tempo. Cada <em>cor</em>, um sentimento.
+                            <strong>artista, produtor, compositor.</strong>
+                            Curitiba é sua raiz — o mundo, sua expansão. Mais de 15 anos girando a música como um cubo mágico:
+                            entre o groove do baixo, a levada do beat e a alma das canções. Seus shows são peças <strong>únicas</strong>: DJ e Bass, corpo e frequência.
+                          </p>
+                          <div style="display:flex;gap:5px;">
+                            <img style="width:33.33%" src="imgs/post 1.jpg">
+                            <img style="width:33.33%" src="imgs/post 2.jpg">
+                            <img style="width:33.33%" src="imgs/post 3.jpg">
+                          </div>
+                        </div>
+                        <div style="width:50%;height:100%;" class="rosebg"></div>
+                      </div>`; break;
+                  case 'left': htmlContent = `<div><h1>Face Esquerda</h1><p>Esta é a lateral esquerda do cubo.</p></div>`; break;
+                  case 'top': htmlContent = `<div><h1>Face Superior</h1><p>Topo do cubo!</p></div>`; break;
+                  case 'bottom': htmlContent = `<div><h1>Face Inferior</h1><p>Parte de baixo.</p></div>`; break;
+                }
+
+                popup.innerHTML = htmlContent;
+                popup.addEventListener('click', () => popup.remove());
+                document.body.appendChild(popup);
+              });
+
+              miniCube.appendChild(faceDiv);
+            }
+          });
+
+          cubeContainer.appendChild(miniCube);
+        }
+      }
+    }
+
+    // Controle de rotação
+    let isDragging = false;
+    let lastX = 0, lastY = 0;
+    let rotationX = -30;
+    let rotationY = 30;
+
+    function updateRotation() {
+      cubeContainer.style.transform = `translate(-50%, -50%) rotateX(${rotationX}deg) rotateY(${rotationY}deg)`;
+    }
+
+    const scene = document.getElementById('scene');
+
+    function startDrag(x, y) {
+      isDragging = true;
+      lastX = x;
+      lastY = y;
+    }
+
+    function stopDrag() {
+      isDragging = false;
+    }
+
+    function handleDrag(x, y) {
+      if (!isDragging) return;
+      const deltaX = x - lastX;
+      const deltaY = y - lastY;
+      rotationY += deltaX * 0.4;
+      rotationX -= deltaY * 0.4;
+      updateRotation();
+      lastX = x;
+      lastY = y;
+    }
+
+    scene.addEventListener('mousedown', (e) => startDrag(e.clientX, e.clientY));
+    document.addEventListener('mouseup', stopDrag);
+    document.addEventListener('mousemove', (e) => handleDrag(e.clientX, e.clientY));
+
+    scene.addEventListener('touchstart', (e) => {
+      if (e.touches.length === 1) startDrag(e.touches[0].clientX, e.touches[0].clientY);
+    });
+    document.addEventListener('touchend', stopDrag);
+    document.addEventListener('touchmove', (e) => {
+      if (e.touches.length === 1) handleDrag(e.touches[0].clientX, e.touches[0].clientY);
+    });
+
+    // 🎯 Auto rotação
+    setInterval(() => {
+      if (!isDragging) {
+        rotationY += 0.3;
+        updateRotation();
+      }
+    }, 30);
+
+    function closeInitialPopup() {
+      const popup = document.getElementById('initialPopup');
+      if (popup) popup.remove();
+    }
+
+    updateRotation();
+  </script>
+</body>
+
+</html>
